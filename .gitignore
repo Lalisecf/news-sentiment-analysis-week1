@@ -1,0 +1,13 @@
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# Data files (raw + cleaned)
+data/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+*.pyc
