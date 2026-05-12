@@ -50,7 +50,7 @@ news-sentiment-analysis/
 ├── notebooks/
 │   ├── task_1_eda.ipynb
 │   ├── task_2_quantitative_analysis.ipynb
-│   └── task_3_sentiment_correlation.ipynb
+│   └── task_3_sentiment_stock_correlation.ipynb
 │
 ├── scripts/
 ├── src/
@@ -110,13 +110,13 @@ news-sentiment-analysis/
 
 ## Quantitative Summary
 
-| Stock | Average Return | Volatility  | RSI Trend       |
-| ----- | -------------- | ----------- | --------------- |
-| AAPL  | Moderate       | Stable      | Neutral         |
-| AMZN  | Moderate       | Medium      | Bullish         |
-| GOOG  | Lower          | Most Stable | Bullish         |
-| META  | Strong         | High        | Strong Momentum |
-| NVDA  | Highest        | Highest     | Strong Momentum |
+| Stock | Average Return | Volatility | RSI Trend |
+| ----- | -------------- | ---------- | --------- |
+| AAPL  | Moderate       | Stable     | Neutral |
+| AMZN  | Moderate       | Medium     | Bullish |
+| GOOG  | Lower          | Most Stable | Bullish |
+| META  | Strong         | High       | Strong Momentum |
+| NVDA  | Highest        | Highest    | Strong Momentum |
 
 ## Key Findings
 
@@ -125,6 +125,142 @@ news-sentiment-analysis/
 * GOOG was the most stable stock
 * Market volatility increased significantly after 2020
 * Technology-sector growth strongly influenced stock momentum
+
+---
+
+# Task 3 — Correlation Between News Sentiment and Stock Movement
+
+## Objectives
+
+* Perform sentiment analysis on financial news headlines
+* Generate numerical sentiment scores using NLP
+* Align financial news dates with stock trading days
+* Compute daily stock returns
+* Measure correlation between sentiment and stock price movement
+* Visualize sentiment-return relationships
+* Interpret correlation strength and limitations
+
+## Sentiment Analysis Tool
+
+This project used **NLTK VADER (Valence Aware Dictionary and Sentiment Reasoner)** for sentiment analysis.
+
+### Why VADER?
+
+VADER was selected because:
+* it performs well on short text such as news headlines,
+* it is lightweight and computationally efficient,
+* and it produces normalized sentiment scores between -1 and +1.
+
+The compound sentiment score was used as the primary sentiment metric.
+
+## Task 3 Workflow
+
+### Date Alignment
+
+* Converted publication timestamps into datetime format
+* Matched news headlines with stock trading dates
+* Handled missing and unmatched records
+* Aligned non-trading day articles to available trading dates
+
+### Sentiment Scoring
+
+Each headline received a sentiment score:
+* Positive sentiment → closer to +1
+* Negative sentiment → closer to -1
+* Neutral sentiment → near 0
+
+### Daily Sentiment Aggregation
+
+When multiple headlines existed for the same stock on the same day:
+* average daily sentiment scores were calculated
+
+### Daily Return Calculation
+
+Daily stock returns were computed using:
+
+\[
+\text{Daily Return}_t =
+\frac{\text{Close}_t - \text{Close}_{t-1}}
+{\text{Close}_{t-1}}
+\times 100
+\]
+
+### Correlation Analysis
+
+Pearson correlation analysis was used to measure the relationship between:
+* average daily sentiment scores
+* and daily stock returns
+
+---
+
+# Correlation Results
+
+| Stock | Correlation | Interpretation |
+|---|---|---|
+| NVDA | 0.207 | Strongest positive relationship |
+| GOOG | 0.171 | Moderate positive relationship |
+| AMZN | 0.161 | Weak positive relationship |
+| AAPL | 0.120 | Weakest positive relationship |
+
+## Key Findings
+
+* All analyzed stocks showed positive sentiment-return correlations
+* NVDA demonstrated the strongest sentiment sensitivity
+* GOOG also showed statistically meaningful sentiment relationships
+* AAPL and AMZN exhibited weaker relationships
+* META had insufficient aligned observations for reliable analysis
+
+Overall, the findings suggest that positive financial news sentiment generally aligns with positive stock returns, although the relationship remains relatively weak.
+
+---
+
+# Interpretation of Results
+
+## Correlation Interpretation
+
+The analysis explored the relationship between financial news sentiment and daily stock price movement using Pearson correlation coefficients.
+
+The results showed weak positive correlations across the analyzed technology stocks.
+
+Positive correlation values indicate that positive financial news sentiment generally aligned with positive daily stock returns.
+
+Among the analyzed stocks:
+* NVDA showed the strongest relationship between sentiment and stock movement
+* GOOG also demonstrated a noticeable positive relationship
+* AAPL and AMZN exhibited weaker positive correlations
+
+The scatter plots further confirmed that although positive sentiment sometimes aligned with positive returns, the data points remained widely dispersed, indicating that sentiment alone is not a strong predictor of stock price movement.
+
+The p-values also suggested that:
+* NVDA and GOOG produced statistically significant relationships
+* AAPL and AMZN showed weaker statistical significance
+
+Overall, the findings suggest that financial news sentiment may provide useful predictive signals when combined with technical indicators and broader market analysis techniques.
+
+---
+
+# Limitations
+
+Several limitations should be considered when interpreting the results of this analysis:
+
+* Correlation does not imply causation
+* Market prices are influenced by many external factors
+* News impact may occur with lag effects
+* Headlines alone may not capture full article sentiment
+* Financial sentiment models may misinterpret technical language
+* Some stocks had insufficient aligned observations after merging datasets
+
+---
+
+# Investment Strategy Recommendations
+
+Based on the findings:
+
+* Use sentiment analysis as a supplementary trading signal
+* Combine sentiment with technical indicators such as RSI and MACD
+* Focus on stocks with stronger sentiment-return relationships
+* Explore lag-based sentiment analysis for future improvements
+* Use rolling correlations to monitor changing market behavior
 
 ---
 
@@ -142,6 +278,7 @@ news-sentiment-analysis/
 
 * scikit-learn
 * nltk
+* NLTK VADER
 * TextBlob
 * wordcloud
 
@@ -209,7 +346,7 @@ jupyter notebook
 
 * task_1_eda.ipynb
 * task_2_quantitative_analysis.ipynb
-* task_3_sentiment_correlation.ipynb
+* task_3_sentiment_stock_correlation.ipynb
 
 ---
 
@@ -231,6 +368,7 @@ The project includes a reusable workflow that:
 
 * automatically loads stock CSV files
 * computes technical indicators
+* performs sentiment analysis
 * generates visualizations
 * summarizes financial metrics
 
@@ -254,23 +392,8 @@ The project generates:
 * publication frequency trends
 * publisher activity plots
 * WordCloud keyword visualizations
-
----
-
-# Future Work — Task 3
-
-The next phase will focus on:
-
-* sentiment analysis using NLP
-* sentiment scoring of financial headlines
-* date alignment between news and trading days
-* Pearson correlation between sentiment and stock returns
-* sentiment-return visualization and analysis
-
-## Planned Tools
-
-* NLTK VADER
-* TextBlob
+* sentiment vs return scatter plots
+* sentiment category return bar charts
 
 ---
 
@@ -295,16 +418,18 @@ git commit -m "feat: add RSI analysis"
 
 # Conclusion
 
-This project successfully established:
+This project successfully integrated financial news analysis with quantitative stock market analysis.
 
-* a professional financial analytics workflow
-* reusable stock analysis pipelines
-* technical indicator computation for multiple stocks
+The project achieved:
 * exploratory analysis of financial news data
+* technical indicator computation
+* sentiment scoring of financial headlines
+* stock return analysis
+* statistical correlation analysis between sentiment and market movement
 
-The analysis identified strong momentum in AI-driven technology companies and laid the foundation for sentiment-driven predictive market analysis.
+The findings suggest that financial news sentiment can provide valuable predictive insights when combined with technical and quantitative market analysis techniques.
 
-Future sentiment correlation analysis will extend the project by connecting financial news narratives directly to stock price movements.
+This project demonstrates how Natural Language Processing (NLP) and financial analytics can be integrated to support data-driven investment decision-making.
 
 ---
 
@@ -315,3 +440,4 @@ Future sentiment correlation analysis will extend the project by connecting fina
 * TextBlob Documentation
 * NLTK Documentation
 * scikit-learn Documentation
+* VADER Sentiment Documentation
